@@ -1,0 +1,20 @@
+.btn-action-delete {
+    border: '1px solid #d60202';
+    border-radius: 8;
+    width: 25;
+    height: 25;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    background: '#ff0808'
+}
+.btn-action-edit {
+    border: '1px solid #e8c202';
+    border-radius: 8;
+    width: 25;
+    height: 25;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    background: '#ffd500';
+}

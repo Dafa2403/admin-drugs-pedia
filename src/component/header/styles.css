@@ -1,0 +1,8 @@
+.Header {
+  position: fixed;
+  width: 100vw;
+  background-color: #fff;
+  box-shadow: 7px 10px 53px 0px rgba(0,0,0,0.21);
+  -webkit-box-shadow: 7px 10px 53px 0px rgba(0,0,0,0.21);
+  -moz-box-shadow: 7px 10px 53px 0px rgba(0,0,0,0.21);
+}

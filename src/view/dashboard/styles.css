@@ -1,0 +1,10 @@
+.btn-navigation{
+    box-shadow: 7px 10px 31px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 7px 10px 31px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 7px 10px 31px 0px rgba(0,0,0,0.25);
+    cursor: pointer;
+    background: #E5ECF6
+}
+.btn-navigation:hover{
+    background: #d5e7ff;
+}
