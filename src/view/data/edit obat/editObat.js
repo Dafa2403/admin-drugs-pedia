@@ -1,116 +1,151 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import axios from '../../../api/axios';
+import { CAlert, CForm, CFormInput, CFormTextarea, CInputGroup, CInputGroupText } from '@coreui/react';
+import { useNavigate } from 'react-router-dom';
 
 function EditObat() {
-    const [drugs_name, setDrugsName] = useState('')
-    console.log("🚀 ~ file: editObat.js:7 ~ EditObat ~ drugs_name:", drugs_name)
-    const [kategori, setKategori] = useState('')
-    console.log("🚀 ~ file: editObat.js:9 ~ EditObat ~ kategori:", kategori)
-    const [deskripsi, setDeskripsi] = useState('')
-    console.log("🚀 ~ file: editObat.js:11 ~ EditObat ~ deskripsi:", deskripsi)
-    const [image, setImage] = useState('')
-    console.log("🚀 ~ file: editObat.js:12 ~ EditObat ~ image:", image)
-    const [id,setId] = useState(null)
-    console.log("🚀 ~ file: editObat.js:11 ~ EditObat ~ id:", id)
-    const [current, setCurrent] = useState([])
-    console.log("🚀 ~ file: editObat.js:11 ~ EditObat ~ current:", current)
+  const [drugs_name, setDrugsName] = useState('');
+  const [kategori, setKategori] = useState('');
+  const [deskripsi, setDeskripsi] = useState('');
+  const [image, setImage] = useState(null);
+  const [id, setId] = useState(null);
+  const [current, setCurrent] = useState([]);    
+  const [visible, setVisible] = useState(false)
+  const [color, setColor] = useState('')
+  const [message, setMessage] = useState('')
 
-    const token = useSelector((item) => item.access)
-    const profile = useSelector((state) => state.profile.isProfile)
-    const id_obat = useSelector((state) => state.choose.id)
-    console.log("🚀 ~ file: editObat.js:17 ~ EditObat ~ id_obat:", id_obat)
-    console.log("🚀 ~ file: input.js:14 ~ InputObat ~ profile:", profile.currUser)
+  const token = useSelector((item) => item.access);
+  const id_obat = useSelector((state) => state.choose.id);
+  const navigate = useNavigate();
 
-    const isData = true
 
-    useEffect(() =>{
-      axios.get(
-        `/Drugs/${id_obat}`
-      ).then((res) => {
-        for (let i = 0; i < res.data.length; i++) {
-            const element = res.data[i];
-            setDrugsName(element.drugs_name)
-            setKategori(element.subTitle)
-            setDeskripsi(element.deskripsi)
-            setImage(element.image)   
-            setId(element.id_drugs)
-            
-        }
-    })
-    },[isData])
+  const isData = true;
 
-    const handleSubmit = async (e) =>{
+  useEffect(() => {
+    axios.get(`/Drugs/${id_obat}`).then((res) => {
+      for (let i = 0; i < res.data.length; i++) {
+        const element = res.data[i];
+        setDrugsName(element.drugs_name);
+        setKategori(element.subTitle);
+        setDeskripsi(element.deskripsi);
+        setImage(element.image);
+        setId(element.id_drugs);
+      }
+    });
+  }, [isData]);
 
-        try {
+  const handleSubmit = async () => {
+    try {
+        if (drugs_name !== '' && kategori !== '' && deskripsi !== '' && image !== null){
+            const formData = new FormData();
+            formData.append('id_drugs', id);
+            formData.append('drugs_name', drugs_name);
+            formData.append('subTitle', kategori);
+            formData.append('deskripsi', deskripsi);
+            formData.append('image', image);
             const res = await axios.put(
-                '/editDrugs',
-                JSON.stringify({id_drugs: id, drugs_name, subTitle : kategori, deskripsi, image}),
+                "/editDrugs",
+                formData,
                 {
                     headers: {
-                        "Content-Type" : "application/json",
+                        "Content-Type": "multipart/form-data",
                         withCredentials: true,
-                        Authorization: `Bearer ${token.isToken}`
+                        Authorization: `Bearer ${token.isToken}`,
                     }
                 }
             );
-            setDrugsName("")
-            setKategori("")
-            setDeskripsi("")
-            setImage("")
-
-            console.log("🚀 ~ file: login.js:34 ~ handleSubmit ~ res:", res)
-
-        } catch (err){
-            console.log('error')
+            setDrugsName("");
+            setKategori("");
+            setDeskripsi("");
+            setImage(null);
+            setVisible(true)
+            handleMessage('success')
+            setTimeout(()=> {
+                navigate('/DataObat')
+            }, 2000);
+        }else{
+            setVisible(true)
+            handleMessage('null')
         }
+    } catch (err) {
+      console.log('error');
+      setVisible(true)
+      handleMessage('error')
     }
-    
-  return (
-    <div style={{padding: 10, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-        <div style={{border: '1px solid', borderRadius: 8, height: '80vh', padding: 15, width: '100%'}}>
-            <h6>Input Obat</h6>
-            <hr/>
-            <div>
-                <div className='mb-3'>
-                    <label for="exampleInputEmail1" class="form-label">Nama Obat</label>
-                    <input type="text" class="form-control" 
-                        placeholder='Masukan Nama Obat..'
-                        onChange={(e) => setDrugsName(e.target.value)}
-                        value={drugs_name}
-                    ></input>
-                </div>
-                <div className='mb-3'>
-                    <label for="exampleInputEmail1" class="form-label">Kategori</label>
-                    <input type="text" class="form-control" 
-                        placeholder='Masukan Kategori Obat..'
-                        onChange={(e) => setKategori(e.target.value)}
-                        value={kategori}
-                    ></input>
-                </div>
-                <div className='mb-3'>
-                    <label for="exampleInputEmail1" class="form-label">Deskripsi</label>
-                    <input type="text" class="form-control" 
-                        placeholder='Masukan Deskripsi..'
-                        onChange={(e) => setDeskripsi(e.target.value)}
-                        value={deskripsi}
-                    ></input>
-                </div>
-                <div className='mb-3'>
-                    <label for="exampleInputEmail1" class="form-label">Image</label>
-                    <input type="text" class="form-control" 
-                        placeholder='Masukan Image..' 
-                        onChange={(e) => setImage(e.target.value)}
-                        value={image}
-                    ></input>
-                </div>
-                <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: 10}}>
-                    <button onClick={() => handleSubmit()} class="btn btn-primary">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
-  )
+  };
+
+  const handleMessage = (type) => {
+    if (type === 'error') {
+        setColor('danger')
+        setMessage('Input data gagal') 
+    }else if(type === 'null'){
+        setColor('warning')
+        setMessage('Jangan lupa untuk input nama obat, kategori obat, gambar dan deskripsi')
+    }else{
+        setColor('success')
+        setMessage('Input data berhasil')
+    }
 }
 
-export default EditObat
+  return (
+    <div className="container" >
+      <div className="row justify-content-center mt-4">
+        <div className="col-md-10">
+          <div className="card border-primary">
+            <div className="card-body p-4">
+              <h6 className="mb-4">Input Obat</h6>
+              <hr />
+              <div>
+                <div className="mb-3">
+                  <label className="form-label">Nama Obat</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Masukan Nama Obat.."
+                    onChange={(e) => setDrugsName(e.target.value)}
+                    value={drugs_name}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Kategori</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Masukan Kategori Obat.."
+                    onChange={(e) => setKategori(e.target.value)}
+                    value={kategori}
+                  />
+                </div>
+                <div className="mb-3">
+                  <CForm>
+                    <CFormTextarea
+                      id="deskripsi"
+                      label="Deskripsi"
+                      rows={3}
+                      onChange={(e) => setDeskripsi(e.target.value)}
+                    />
+                  </CForm>
+                </div>
+                <div className='mb-3'>
+                    <label htmlFor="exampleInputEmail1" className="form-label">Image</label>
+                    <input class="form-control" type="file" id="formFile" accept="image/png, image/jpeg" name='image' onChange={e => setImage(e.target.files[0])}></input>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
+                  <button onClick={handleSubmit} className="btn btn-primary">
+                    Submit
+                  </button>
+                </div>
+                <CAlert color={color} visible={visible}>
+                    {message}
+                </CAlert>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default EditObat;

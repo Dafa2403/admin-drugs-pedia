@@ -5,9 +5,9 @@ import Layout from "./layout/layout";
 
 function App() {
   return (
-    <>
+    <div style={{overflow: "hidden"}}>
       <Layout/>
-    </>
+    </div>
   );
 }
 

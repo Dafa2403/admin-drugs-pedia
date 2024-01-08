@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import './styles.css';
 import { CChart } from "@coreui/react-chartjs";
 import axios from "../../api/axios";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,9 +6,8 @@ import { isLocate } from "../../redux/actions/locate";
 import { Link, useNavigate } from "react-router-dom";
 
 function Dashboard() {
-  const [obat, setObat] = useState([])
-  const [users, setUsers] = useState([])
-  const [dates, setDates] = useState([])
+  const [obat, setObat] = useState([]);
+  const [users, setUsers] = useState([]);
   const [month, setMonth] = useState({
     Jan: 0,
     Feb: 0,
@@ -23,7 +21,7 @@ function Dashboard() {
     Okt: 0,
     Nov: 0,
     Des: 0,
-  })
+  });
   const [monthObat, setMonthObat] = useState({
     Jan: 0,
     Feb: 0,
@@ -37,291 +35,135 @@ function Dashboard() {
     Okt: 0,
     Nov: 0,
     Des: 0,
-  })
-  console.log("🚀 ~ file: dashboard.js:41 ~ Dashboard ~ monthObat:", monthObat)
-  console.log("🚀 ~ file: dashboard.js:14 ~ Dashboard ~ month:", month)
-  console.log("🚀 ~ file: dashboard.js:14 ~ Dashboard ~ date:", dates)
+  });
 
-  const navigate = useNavigate()
-  // const d = new Date(date)
+  const navigate = useNavigate();
 
-  const checkObat = true
-  const checkUser = true
+  const token = useSelector((item) => item.access);
+  const dispatch = useDispatch();
 
-  const token = useSelector((item) => item.access)
-  const dispatch = useDispatch()
-
-
-  useEffect(() =>{
-    dispatch(isLocate('dashboard'))
-    for (let i = 0; i < dates.length; i++) {
-      const element = dates[i];     
-    }
-  },[])
-  
+  useEffect(() => {
+    dispatch(isLocate('dashboard'));
+  }, [dispatch]);
 
   useEffect(() => {
     axios.get("/drugs").then((res) => {
-      setObat(res.data)
-    })
-    for (let i = 0; i < obat.length; i++) {
-      const element = obat[i];
-      console.log("🚀 ~ file: dashboard.js:60 ~ useEffect ~ new Date(element.created_time).getMonth() + 1:", new Date(element.created_time).getMonth() + 1)
-      switch( new Date(element.created_time).getMonth()){
-        case 0:
-          setMonth({
-            ...month,
-            Jan: month.Jan + 1
-          })
-          break;
-        case 1:
-          setMonth({
-            ...month,
-            Feb: month.Feb + 1
-          })
-          break;
-      
-        case 2:
-          setMonth({
-            ...month,
-            Mar: month.Mar + 1
-          })
-          break;
-        case 3:
-          setMonth({
-            ...month,
-            Apr: month.Apr + 1
-          })
-          break;
-        case 4:
-          setMonth({
-            ...month,
-            Mei: month.Mei + 1
-          })
-          break;
-        case 5:
-          setMonth({
-            ...month,
-            Jun: month.Jun + 1
-          })
-          break;
-        case 6:
-          setMonth({
-            ...month,
-            Jul: month.Jul + 1
-          })
-          break;
-        case 7:
-          setMonth({
-            ...month,
-            Jun: month.Agt + 1
-          })
-          break;
-        case 8:
-          setMonth({
-            ...month,
-            Agt: month.Sep + 1
-          })
-          break;
-        case 9:
-          setMonth({
-            ...month,
-            Sep: month.Okt + 1
-          })
-          break;
-        case 10:
-          setMonth({
-            ...month,
-            Nov: month.Nov + 1
-          })
-          break;
-        case 11:
-          console.log('test')
-          setMonth({
-            ...month,
-            Des: month.Des + 1
-          })
-          break;
-      }
-    }
-  },[])
+      setObat(res.data);
+      res.data.forEach((element) => {
+        const monthIndex = new Date(element.created_time).getMonth();
+        setMonth((prevMonth) => ({ ...prevMonth, [getMonthName(monthIndex)]: prevMonth[getMonthName(monthIndex)] + 1 }));
+      });
+    });
+  }, []);
 
   useEffect(() => {
-    axios.get("/auth/api/users",{
+    axios.get("/auth/api/users", {
       headers: {
-        Authorization: `Bearer ${token.isToken}`
-      }
+        Authorization: `Bearer ${token.isToken}`,
+      },
     }).then((res) => {
-      setUsers(res.data)
-      for (let i = 0; i < users.length; i++) {
-        const element = users[i];
-        console.log("🚀 ~ file: dashboard.js:162 ~ useEffect ~ element:", element.created_time)
-        switch( new Date(element.created_time).getMonth()){
-          case 0:
-            setMonthObat({
-              ...monthObat,
-              Jan: monthObat.Jan + 1
-            })
-            break;
-          case 1:
-            setMonthObat({
-              ...monthObat,
-              Feb: monthObat.Feb + 1
-            })
-            break;
-        
-          case 2:
-            setMonthObat({
-              ...monthObat,
-              Mar: monthObat.Mar + 1
-            })
-            break;
-          case 3:
-            setMonthObat({
-              ...monthObat,
-              Apr: monthObat.Apr + 1
-            })
-            break;
-          case 4:
-            setMonthObat({
-              ...monthObat,
-              Mei: monthObat.Mei + 1
-            })
-            break;
-          case 5:
-            setMonthObat({
-              ...monthObat,
-              Jun: monthObat.Jun + 1
-            })
-            break;
-          case 6:
-            setMonthObat({
-              ...monthObat,
-              Jul: monthObat.Jul + 1
-            })
-            break;
-          case 7:
-            console.log('test')
-            setMonthObat({
-              ...monthObat,
-              Jun: monthObat.Agt + 1
-            })
-            break;
-          case 8:
-            setMonthObat({
-              ...monthObat,
-              Agt: monthObat.Sep + 1
-            })
-            break;
-          case 9:
-            setMonthObat({
-              ...monthObat,
-              Sep: monthObat.Okt + 1
-            })
-            break;
-          case 10:
-            setMonthObat({
-              ...monthObat,
-              Nov: monthObat.Nov + 1
-            })
-            break;
-          case 11:
-            console.log('test')
-            setMonthObat({
-              ...monthObat,
-              Des: monthObat.Des + 1
-            })
-            break;
-        }
-      }
-    })
-  },[])
+      setUsers(res.data);
+      res.data.forEach((element) => {
+        const monthIndex = new Date(element.created_time).getMonth();
+        setMonthObat((prevMonthObat) => ({
+          ...prevMonthObat,
+          [getMonthName(monthIndex)]: prevMonthObat[getMonthName(monthIndex)] + 1,
+        }));
+      });
+    });
+  }, [token.isToken]);
+
+  const getMonthName = (index) => {
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+    return monthNames[index];
+  };
 
   return (
-    <div>
-      <h2>Dashboard</h2>
-      <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 50}}>
-        <div style={{border: '1px solid #D5E2F4 ', width: '45%', borderRadius: 8, height: '10vh', padding: 10, background: '#E5ECF6'}}>
-          <h6>User</h6>
-          <span>{users.length}</span>
+    <div className="container-fluid">
+      <h2 className="mt-4">Dashboard</h2>
+      <div className="row mt-4">
+        <div className="col-lg-6 mb-4">
+          <div className="card border-secondary-subtle h-100">
+            <div className="card-body d-flex flex-column justify-content-between">
+              <h6 className="card-title" style={{ borderBottom: '1px solid #d9d9d9', color: '#333' }}>User</h6>
+              <span style={{ color: '#333' }}>{users.length}</span>
+            </div>
+          </div>
         </div>
-        <div style={{border: '1px solid #D5E2F4',  width: '45%', borderRadius: 8, height: '10vh', padding: 10, background: '#E5ECF6'}}>
-          <h6>Obat</h6>
-          <span>{obat.length}</span>
+        <div className="col-lg-6 mb-4">
+          <div className="card border-secondary-subtle h-100">
+            <div className="card-body d-flex flex-column justify-content-between">
+              <h6 className="card-title" style={{ borderBottom: '1px solid #d9d9d9', color: '#333' }}>Obat</h6>
+              <span style={{ color: '#333' }}>{obat.length}</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div style={{border: '1px solid', height: '50vh', borderRadius: 8, width: '100%'}}>
-      <CChart
-          style={{width: '100%'}}
-          height={100}
-          type="line" 
-          data={{
-            labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September","November" , "November", "Desember"],
-            datasets: [
-              {
-                label: "Obat",
-                backgroundColor: "rgba(220, 220, 220, 0.2)",
-                borderColor: "rgba(220, 220, 220, 1)",
-                pointBackgroundColor: "rgba(220, 220, 220, 1)",
-                pointBorderColor: "#fff",
-                data: [monthObat.Jan, monthObat.Feb, monthObat.Mar, monthObat.Apr, monthObat.Mei, monthObat.Jun, monthObat.Jul, monthObat.Agt, monthObat.Sep, monthObat.Okt, monthObat.Nov, monthObat.Des]
-
-              },
-              {
-                label: "Users",
-                backgroundColor: "rgba(151, 187, 205, 0.2)",
-                borderColor: "rgba(151, 187, 205, 1)",
-                pointBackgroundColor: "rgba(151, 187, 205, 1)",
-                pointBorderColor: "#fff",
-                data: [month.Jan, month.Feb, month.Mar, month.Apr, month.Mei, month.Jun, month.Jul, month.Agt, month.Sep, month.Okt, month.Nov, month.Des]
-              },
-            ],
-          }}
-          options={{
-            plugins: {
-              legend: {
-                labels: {
-                  color: "#000",
-                }
-              }
-            },
-            scales: {
-              x: {
-                grid: {
-                  color: "#0000",
+      <div className="card border-secondary-subtle mb-4">
+        <div className="card-body">
+          <CChart
+            height={'100vh'}
+            type="line"
+            data={{
+              labels: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+              datasets: [
+                {
+                  label: "Obat",
+                  backgroundColor: "rgba(220, 220, 220, 0.2)",
+                  borderColor: "rgba(220, 220, 220, 1)",
+                  pointBackgroundColor: "rgba(220, 220, 220, 1)",
+                  pointBorderColor: "#fff",
+                  data: [monthObat.Jan, monthObat.Feb, monthObat.Mar, monthObat.Apr, monthObat.Mei, monthObat.Jun, monthObat.Jul, monthObat.Agt, monthObat.Sep, monthObat.Okt, monthObat.Nov, monthObat.Des],
                 },
-                ticks: {
-                  color: "#000",
+                {
+                  label: "Users",
+                  backgroundColor: "rgba(151, 187, 205, 0.2)",
+                  borderColor: "rgba(151, 187, 205, 1)",
+                  pointBackgroundColor: "rgba(151, 187, 205, 1)",
+                  pointBorderColor: "#fff",
+                  data: [month.Jan, month.Feb, month.Mar, month.Apr, month.Mei, month.Jun, month.Jul, month.Agt, month.Sep, month.Okt, month.Nov, month.Des],
+                },
+              ],
+            }}
+            options={{
+              plugins: {
+                legend: {
+                  labels: {
+                    color: "#333", // Adjust legend text color
+                  },
                 },
               },
-              y: {
-                grid: {
-                  color: "#c4c4c4",
+              scales: {
+                x: {
+                  grid: {
+                    color: "#ccc", // Adjust x-axis grid color
+                  },
+                  ticks: {
+                    color: "#333", // Adjust x-axis tick color
+                  },
                 },
-                ticks: {
-                  color: "#000",
+                y: {
+                  grid: {
+                    color: "#ccc", // Adjust y-axis grid color
+                  },
+                  ticks: {
+                    color: "#333", // Adjust y-axis tick color
+                  },
                 },
               },
-            },
-          }}
-        />
+            }}
+          />
+        </div>
       </div>
-
-      <div style={{height: '20vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <Link to='/Input' className="btn-navigation" 
-          style={{ width: '30%', borderRadius: 8, height: 60, display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#000', textDecoration: 'none'}}
-        >
-          <h6>Input Data Obat</h6>
+      <div className="row mt-4" style={{ display: 'flex', justifyContent: 'center' }}>
+        <Link to='/Input' className="btn btn-primary col-lg-3 mb-3" style={{ marginRight: 15 }}>
+          <h6 className="m-0">Input Data Obat</h6>
         </Link>
-        <Link to='/DataObat' className="btn-navigation" 
-          style={{ width: '30%', borderRadius: 8, height: 60, display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#000', textDecoration: 'none'}}
-        >
-          <h6>Data Obat</h6>
+        <Link to='/DataObat' className="btn btn-primary col-lg-3 mb-3" style={{ marginRight: 15 }}>
+          <h6 className="m-0">Data Obat</h6>
         </Link>
-        <Link to='/DataUsers' className="btn-navigation" 
-          style={{ width: '30%', borderRadius: 8, height: 60, display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#000', textDecoration: 'none'}}
-        >
-          <h6>Data Users</h6>
+        <Link to='/DataUsers' className="btn btn-primary col-lg-3 mb-3" style={{ marginRight: 15 }}>
+          <h6 className="m-0">Data Users</h6>
         </Link>
       </div>
     </div>
