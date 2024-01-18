@@ -13,6 +13,8 @@ function Sidebar(props) {
   const location = useLocation();
   const profile = useSelector((state) => state.profile.isProfile);
   const show = useSelector((state) => state.show);
+  // const BASE_URL = "http://localhost:8080";
+  const BASE_URL = "http://195.35.9.182:8080"; //public
 
 
   const handleLogout = () => {
@@ -47,7 +49,7 @@ function Sidebar(props) {
         <>
           <div className="sidebar-profile">
             <img
-              src={`http://localhost:8080/upload/profile/${profile.imgProfile}` || 'https://via.placeholder.com/150'}
+              src={`${BASE_URL}/upload/profile/${profile.imgProfile}` || 'https://via.placeholder.com/150'}
               alt="profile"
               className="profile-picture"
             />

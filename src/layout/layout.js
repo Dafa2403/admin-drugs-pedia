@@ -31,7 +31,7 @@ function Layout() {
         {isLogin.isLogin ? (
           <div className="row">
             {/* Sidebar */}
-            <nav className="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <nav className="col-md-3 col-lg-2 d-md-block bg-light">
               <div className="position-sticky">
                 <Navbar windowSize={windowSize}/>
               </div>

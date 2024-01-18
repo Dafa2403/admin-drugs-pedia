@@ -124,6 +124,7 @@ function EditObat() {
                       label="Deskripsi"
                       rows={3}
                       onChange={(e) => setDeskripsi(e.target.value)}
+                      value={deskripsi}
                     />
                   </CForm>
                 </div>
