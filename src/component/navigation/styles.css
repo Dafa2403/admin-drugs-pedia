@@ -4,12 +4,13 @@
   position: fixed;
   display: flex;
   flex-direction: column;
-  width: 16vw;
   transition: width 0.3s ease-in-out;
 }
+
 .side.show {
   width: 5vw; /* width when it's open */
 }
+
 .sidebar-profile {
   margin-top: 20px;
   display: flex;
@@ -56,4 +57,13 @@
 .sidebar-footer .btn {
   width: 90%;
   border-radius: 18px;
+}
+
+/* Media queries for responsiveness */
+@media screen and (max-width: 768px) {
+  .side,
+  .side.show {
+    width: 50%;
+    left: 0;
+  }
 }

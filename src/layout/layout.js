@@ -2,10 +2,28 @@ import { Header, Navbar } from '../component';
 import { Dashboard, DataObat, DataUsers, EditObat, EditUser, InputObat, Login } from '../view';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import './styles.css'
+import { useEffect, useRef, useState } from 'react';
 
 function Layout() {
   const isLogin = useSelector((state) => state.login);
-  
+  const show = useSelector((state) => state.show);
+  const [windowSize, setWindowSize] = useState([
+    window.innerWidth,
+    window.innerHeight,
+  ]);
+
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWindowSize([window.innerWidth, window.innerHeight]);
+    };
+
+    window.addEventListener('resize', handleWindowResize);
+
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []);
 
   return (
     <Router>
@@ -15,12 +33,12 @@ function Layout() {
             {/* Sidebar */}
             <nav className="col-md-3 col-lg-2 d-md-block bg-light sidebar">
               <div className="position-sticky">
-                <Navbar />
+                <Navbar windowSize={windowSize}/>
               </div>
             </nav>
 
             {/* Main content */}
-            <div className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body" style={{ margin: 10, backgroundColor: '#ffffff' }}>
+            <div className={!show.show ? "col-md-9 ms-sm-auto col-lg-11 px-md-4 bg-body animation" : windowSize[0] <= 767 ? "col-md-9 ms-sm-5 col-lg-10 px-md-2 bg-body animation" : "col-md-9 ms-sm-auto col-lg-10 px-md-2 bg-body animation"} style={{ margin: 10, backgroundColor: '#ffffff' }}>
               <Header />
               <div style={{ marginTop: 50 }}>
                 <Routes>
